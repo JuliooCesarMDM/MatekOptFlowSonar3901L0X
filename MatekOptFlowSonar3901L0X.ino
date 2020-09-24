@@ -4,6 +4,8 @@
 #define RANGEFINDER_OUT_OF_RANGE        (-1)
 #define RANGEFINDER_NO_NEW_DATA         (-3)
 
+#define UNUSED(x) (void)(x)
+
 typedef struct sbuf_s {
   uint8_t *ptr;
   uint8_t *end;
@@ -58,6 +60,10 @@ void loop() {
 
 uint8_t Read8Bits() {
   return serialBuffer[Pointer++] & 0xff;
+}
+
+uint8_t *sbufPtr(sbuf_t *buf) {
+  return buf->ptr;
 }
 
 void serialMSPreceive() {
@@ -116,12 +122,6 @@ void serialMSPCheck() {
   }
 }
 
-#define UNUSED(x) (void)(x)
-
-uint8_t *sbufPtr(sbuf_t *buf) {
-  return buf->ptr;
-}
-
 static void mspProcessSensorCommand(uint16_t cmdMSP, sbuf_t *src) {
   UNUSED(src);
   switch (cmdMSP) {
@@ -145,7 +145,7 @@ static int32_t mspRangefinderGetDistance(void) {
 }
 
 void mspRangefinderReceiveNewData(uint8_t *bufferPtr) {
-  const mspRangefinderSensor_t *pkt = (const mspRangefinderSensor_t *)bufferPtr;
+  const mspRangefinderSensor_t *pkt = (const mspRangefinderSensor_t*)bufferPtr;
   RangeFindersensorData = pkt->distanceMm / 10;
   RangeFinderhasNewData = true;
 }
